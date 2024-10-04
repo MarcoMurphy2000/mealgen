@@ -1,0 +1,21 @@
+package com.dvtsoftware.mealgen.mapper;
+
+import com.dvtsoftware.mealgen.generated.model.Recipe;
+import com.dvtsoftware.mealgen.model.domain.RecipeDomainObject;
+import com.dvtsoftware.mealgen.model.entity.RecipeEntity;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface RecipeMapper {
+
+    //Used in Controller Layer (API layer) - Mapping between DTO and Domain Object to send to Service Layer - Domain Object goes to Service Layer.
+    RecipeDomainObject map_RecipeDTO_to_RecipeDO(Recipe recipe);
+
+    Recipe map_RecipeDO_to_RecipeDTO(RecipeDomainObject recipeDomainObject);
+
+    //Used in Service Layer (Business Logic Layer) - Mapping between Domain Object and Entity to send to Repository Layer - Entity goes to Repository Layer
+    RecipeDomainObject map_RecipeEntity_to_RecipeDO(RecipeEntity recipeEntity);
+
+    RecipeEntity map_RecipeDO_to_RecipeEntity(RecipeDomainObject recipeDomainObject);
+
+}
