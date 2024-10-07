@@ -198,25 +198,18 @@ components:
         allowExtraIngredients:
           type: boolean
           example: false
-        macronutrientCustom:
-          type: object
+        gender:
+          type: string
+          enum: [ Male, Female ]
           nullable: true
-          description: Optional custom macronutrient percentages
-          properties:
-            protein:
-              type: number
-              example: 30
-            carbohydrates:
-              type: number
-              example: 40
-            fat:
-              type: number
-              example: 30
+          description: Gender is required when additional ingredients are allowed
+          example: Male
         mealCategory:
           type: string
-          enum: [ WeightLoss, MuscleGain, Maintenance, Custom ]
+          enum: [ WeightLoss, MuscleGain, Maintenance ]
           nullable: true
-          description: Optional predefined meal category. Either macronutrientCustom or mealCategory should be provided.
+          description: Meal category required if additional ingredients are allowed
+          example: MuscleGain
 
     Meal:
       type: object
@@ -239,6 +232,8 @@ components:
         category:
           type: string
           example: "Weight Loss"
+        recipe:
+          $ref: '#/components/schemas/Recipe'
 
     Recipe:
       type: object

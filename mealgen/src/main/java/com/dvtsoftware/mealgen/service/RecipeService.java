@@ -2,6 +2,7 @@ package com.dvtsoftware.mealgen.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import com.dvtsoftware.mealgen.mapper.RecipeMapper;
 import com.dvtsoftware.mealgen.model.domain.RecipeDomainObject;
@@ -23,24 +24,29 @@ public class RecipeService {
         this.recipeRepository = recipeRepository;
         this.recipeMapper = recipeMapper;
     }
-    
-    public void createRecipe(RecipeDomainObject recipeDomainObject) {
-        recipeRepository.save(recipeMapper.map_RecipeDO_to_RecipeEntity(recipeDomainObject));
+
+//    public void createRecipe(RecipeDomainObject recipeDomainObject) {
+//        recipeRepository.save(recipeMapper.mapRecipeDOToRecipeEntity(recipeDomainObject));
+//    }
+
+    public List<RecipeDomainObject> getAllRecipes() {
+        List<RecipeEntity> recipeEntities = recipeRepository.findAll();
+        return recipeEntities.stream()
+                .map(recipeMapper::mapRecipeEntityToRecipeDO)
+                .toList();
     }
 
-    public List<RecipeEntity> getAllRecipes() {
-        return recipeRepository.findAll();
+    public RecipeDomainObject getRecipeById(Long id) throws NoSuchElementException {
+        Optional<RecipeEntity> recipeEntity = recipeRepository.findById(id);
+        return recipeEntity.map(recipeMapper::mapRecipeEntityToRecipeDO)
+                .orElseThrow(() -> new RuntimeException(RECIPE_NOT_FOUND));
     }
 
-    public RecipeEntity getRecipeById(Long id) {
-        return recipeRepository.findById(id).orElseThrow(() -> new RuntimeException("RecipeEntity not found"));
-    }
-
-    public RecipeEntity updateRecipe(Long id, RecipeDomainObject recipeDomainObject) throws NoSuchElementException {
+    public void updateRecipe(Long id, RecipeDomainObject recipeDomainObject) throws NoSuchElementException {
         checkRecipeExists(id);
-        RecipeEntity recipeEntity = recipeMapper.map_RecipeDO_to_RecipeEntity(recipeDomainObject);
+        RecipeEntity recipeEntity = recipeMapper.mapRecipeDOToRecipeEntity(recipeDomainObject);
         recipeEntity.setId(id);
-        return recipeRepository.save(recipeEntity);
+        recipeRepository.save(recipeEntity);
     }
 
     public void deleteRecipe(Long id) {
