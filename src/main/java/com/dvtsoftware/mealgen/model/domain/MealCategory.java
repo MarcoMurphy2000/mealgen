@@ -1,5 +1,8 @@
 package com.dvtsoftware.mealgen.model.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum MealCategory {
     WEIGHT_LOSS("Weight Loss"),
     MUSCLE_GAIN("Muscle Gain"),
@@ -11,7 +14,4 @@ public enum MealCategory {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }
