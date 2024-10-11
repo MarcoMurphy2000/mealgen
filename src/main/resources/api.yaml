@@ -1,0 +1,282 @@
+openapi: 3.0.1
+info:
+  title: MealEntity Suggestion API
+  description: API to generate meal suggestions based on available ingredients and macronutrient goals.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /meals/generate:
+    post:
+      operationId: generateMeal
+      summary: Generate a meal suggestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MealRequest'
+      responses:
+        '201':
+          description: MealEntity generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meal'
+        '400':
+          description: Invalid macronutrient ratios or meal category provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errorCode:
+                    type: integer
+                example:
+                  message: "Invalid macronutrient ratio"
+                  errorCode: 1001
+        '500':
+          description: Failed to generate balanced meal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errorCode:
+                    type: integer
+                example:
+                  message: "Internal server error"
+                  errorCode: 500
+
+  /meals:
+    get:
+      operationId: getAllMeals
+      summary: Get all meals
+      responses:
+        '200':
+          description: List of all meals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+        '500':
+          description: Failed to retrieve meals
+    delete:
+      operationId: deleteAllMeals
+      summary: Delete all meals
+      responses:
+        '204':
+          description: All meals deleted successfully
+        '500':
+          description: Failed to delete all meals
+
+  /meals/{id}:
+    get:
+      operationId: getMealById
+      summary: Get meal by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: MealEntity found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meal'
+        '404':
+          description: MealEntity not found
+        '500':
+          description: Failed to retrieve meal
+    put:
+      operationId: updateMealById
+      summary: Update meal by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Meal'
+      responses:
+        '200':
+          description: MealEntity updated successfully
+        '400':
+          description: Invalid meal data provided
+        '404':
+          description: MealEntity not found
+        '500':
+          description: Failed to update meal
+    delete:
+      operationId: deleteMealById
+      summary: Delete meal by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: MealEntity deleted successfully
+        '404':
+          description: MealEntity not found
+        '500':
+          description: Failed to delete meal
+
+  /recipes:
+    get:
+      operationId: getAllRecipes
+      summary: Get all recipes
+      responses:
+        '200':
+          description: List of all recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        '500':
+          description: Failed to retrieve recipes
+
+  /recipes/{id}:
+    get:
+      operationId: getRecipeById
+      summary: Get recipe by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: RecipeEntity found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+        '404':
+          description: RecipeEntity not found
+        '500':
+          description: Failed to retrieve recipe
+    put:
+      operationId: updateRecipeById
+      summary: Update recipe by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+      responses:
+        '200':
+          description: RecipeEntity updated successfully
+        '400':
+          description: Invalid recipe data provided
+        '404':
+          description: RecipeEntity not found
+        '500':
+          description: Failed to update recipe
+    delete:
+      operationId: deleteRecipeById
+      summary: Delete recipe by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: RecipeEntity deleted successfully
+        '404':
+          description: RecipeEntity not found
+        '500':
+          description: Failed to delete recipe
+
+components:
+  schemas:
+    MealRequest:
+      type: object
+      properties:
+        ingredients:
+          type: array
+          items:
+            type: string
+          example: [ "Egg", "Tomato" ]
+        allowExtraIngredients:
+          type: boolean
+          example: false
+        gender:
+          type: string
+          enum: [ Male, Female ]
+          nullable: true
+          description: Gender is required when additional ingredients are allowed
+          example: Male
+        mealCategory:
+          type: string
+          enum: [ WEIGHT_LOSS, MUSCLE_GAIN, MAINTENANCE ]
+          nullable: true
+          description: Meal category required if additional ingredients are allowed
+          example: MuscleGain
+
+    Meal:
+      type: object
+      properties:
+        id:
+          type: integer
+        ingredients:
+          type: array
+          items:
+            type: string
+          example: [ "Egg", "Tomato" ]
+        protein:
+          type: number
+        carbohydrates:
+          type: number
+        fat:
+          type: number
+        calories:
+          type: number
+        category:
+          type: string
+          example: "Weight Loss"
+        recipe:
+          $ref: '#/components/schemas/Recipe'
+
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: integer
+        recipeName:
+          type: string
+          example: "Scrambled Eggs"
+        steps:
+          type: array
+          items:
+            type: string
+          example: [ "Crack eggs", "Cook in pan", "Serve" ]
