@@ -248,6 +248,10 @@ components:
       properties:
         id:
           type: integer
+
+        mealName:
+          type: string
+          example: "Chicken and Broccoli Bowl"
         ingredients:
           type: array
           items:
@@ -272,9 +276,6 @@ components:
       properties:
         id:
           type: integer
-        recipeName:
-          type: string
-          example: "Scrambled Eggs"
         steps:
           type: array
           items:
