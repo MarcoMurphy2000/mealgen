@@ -126,9 +126,9 @@ public class OpenAIPromptBuilder {
 
     // Add instruction to format the output as JSON, including the meal category
     public OpenAIPromptBuilder withJSONFormat() {
-        promptBuilder.append("Please format the output in the following JSON structure:\n")
+        promptBuilder.append("Format the output in the following JSON structure:\n")
                 .append("{\n")
-                .append("  \"recipeName\": \"<recipe_name>\",\n")
+                .append("  \"mealName\": \"<meal_name>\",\n")
                 .append("  \"category\": \"<category>\",\n")  // Ensure category is included (Weight Loss, Muscle Gain, or Maintenance)
                 .append("  \"ingredients\": [\"<ingredient1>\", \"<ingredient2>\", ...],\n")
                 .append("  \"steps\": [\"<step1>\", \"<step2>\", ...],\n")

@@ -8,6 +8,7 @@ import lombok.Data;
 public class MealDomainObject {
 
     private Long id;
+    private String mealName;
     private List<String> ingredients;
     private double protein;
     private double carbohydrates;

@@ -8,6 +8,5 @@ import lombok.Data;
 public class RecipeDomainObject {
 
     private Long id;
-    private String recipeName;
     private List<String> steps; // Instructions for preparing the meal
 }

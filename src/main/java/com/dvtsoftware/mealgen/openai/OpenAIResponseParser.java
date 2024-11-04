@@ -28,8 +28,9 @@ public class OpenAIResponseParser {
             MealDomainObject mealDomainObject = new MealDomainObject();
             RecipeDomainObject recipe = new RecipeDomainObject();
 
-            // Extract recipe details from the JSON
-            recipe.setRecipeName(mealJson.getString("recipeName"));
+            // Extract the meal name from the JSON
+            String mealName = mealJson.getString("mealName");
+            mealDomainObject.setMealName(mealName);
 
             // Extract and map recipe ingredients
             JSONArray ingredientsArray = mealJson.getJSONArray("ingredients");
@@ -58,7 +59,7 @@ public class OpenAIResponseParser {
             String category = mealJson.getString("category");
             mealDomainObject.setCategory(category);
 
-            // Set the recipe
+            // Set the recipe in the meal domain object
             mealDomainObject.setRecipe(recipe);
 
             return mealDomainObject;
