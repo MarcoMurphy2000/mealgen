@@ -12,6 +12,14 @@ public class OpenAIPromptBuilder {
         promptBuilder = new StringBuilder();
     }
 
+    // Add culturally inclusive and safety-focused prompt introduction
+    public OpenAIPromptBuilder startPrompt() {
+        promptBuilder.append("Generate a random meal that is culturally inclusive and unbiased. ")
+                .append("The meal should reflect diverse cuisines from around the world and be adaptable to different dietary preferences.\n")
+                .append("Ensure that no unsafe or harmful ingredients are used (e.g., poisonous substances) and that the meal is suitable for consumption.\n");
+        return this;
+    }
+
     public OpenAIPromptBuilder withIngredients(List<String> ingredients) {
         promptBuilder.append("Ingredients (comma-separated): ")
                 .append(String.join(", ", ingredients))
@@ -21,9 +29,9 @@ public class OpenAIPromptBuilder {
 
     public OpenAIPromptBuilder withAllowExtraIngredients(Boolean allowExtraIngredients) {
         if (Boolean.TRUE.equals(allowExtraIngredients)) {
-            promptBuilder.append("Allow extra ingredients: Yes. Add complementary ingredients to the meal.\n");
+            promptBuilder.append("Allow extra ingredients: Yes. Add complementary ingredients that align with diverse cultural cuisines.\n");
         } else {
-            promptBuilder.append("Allow extra ingredients: No. Only use the provided ingredients.\n");
+            promptBuilder.append("Allow extra ingredients: No. Only use the provided ingredients but ensure cultural diversity in meal preparation.\n");
         }
         return this;
     }
@@ -63,7 +71,7 @@ public class OpenAIPromptBuilder {
                     handleMaleMacros(mealCategory);
                     break;
                 default:
-                    handleDefaultMacros(mealCategory); // In case of any unexpected gender value
+                    handleDefaultMacros(mealCategory);
                     break;
             }
         }
@@ -138,7 +146,8 @@ public class OpenAIPromptBuilder {
                 .append("    \"fat_percentage\": \"<percentage>\",\n")
                 .append("    \"calories\": \"<calories>\"\n")
                 .append("  }\n")
-                .append("}");
+                .append("}\n")
+                .append("Ensure the output is well-structured and valid JSON.");
         return this;
     }
 

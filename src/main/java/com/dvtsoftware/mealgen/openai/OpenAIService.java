@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class OpenAIService {
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_KEY = "sk-svcacct-ueXNZLLklFRJgiPZQeOwT3BlbkFJ0fGfYLTteJMeWI45GLWu";  // Ensure you replace with your correct API key
+    private static final String API_KEY = "sk-proj-3x7AejrN0UuYsvP7XoWpT3BlbkFJ7DrGoQdrCDnQ9N6sjiLR";  // Ensure you replace with your correct API key
     private static final String MODEL = "gpt-3.5-turbo";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
