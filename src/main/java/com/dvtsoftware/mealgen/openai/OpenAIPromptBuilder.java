@@ -12,7 +12,7 @@ public class OpenAIPromptBuilder {
         promptBuilder = new StringBuilder();
     }
 
-    // Add culturally inclusive and safety-focused prompt introduction
+    // Give direction: Add culturally inclusive and safety-focused prompt introduction
     public OpenAIPromptBuilder startPrompt() {
         promptBuilder.append("Generate a random meal that is culturally inclusive and unbiased. ")
                 .append("The meal should reflect diverse cuisines from around the world and be adaptable to different dietary preferences.\n")
@@ -132,12 +132,12 @@ public class OpenAIPromptBuilder {
         }
     }
 
-    // Add instruction to format the output as JSON, including the meal category
+    // Add instruction to format the output as JSON, including an example to guide the model
     public OpenAIPromptBuilder withJSONFormat() {
         promptBuilder.append("Format the output in the following JSON structure:\n")
                 .append("{\n")
                 .append("  \"mealName\": \"<meal_name>\",\n")
-                .append("  \"category\": \"<category>\",\n")  // Ensure category is included (Weight Loss, Muscle Gain, or Maintenance)
+                .append("  \"category\": \"<category>\",\n")
                 .append("  \"ingredients\": [\"<ingredient1>\", \"<ingredient2>\", ...],\n")
                 .append("  \"steps\": [\"<step1>\", \"<step2>\", ...],\n")
                 .append("  \"nutritionalValues\": {\n")
@@ -145,6 +145,27 @@ public class OpenAIPromptBuilder {
                 .append("    \"carbohydrates_percentage\": \"<percentage>\",\n")
                 .append("    \"fat_percentage\": \"<percentage>\",\n")
                 .append("    \"calories\": \"<calories>\"\n")
+                .append("  }\n")
+                .append("}\n")
+                .append("Example output:\n")
+                .append("{\n")
+                .append("  \"mealName\": \"Mediterranean Quinoa Salad\",\n")
+                .append("  \"category\": \"Maintenance\",\n")
+                .append("  \"ingredients\": [\"quinoa\", \"cucumber\", \"cherry tomatoes\", \"feta cheese\", \"olives\", \"red onion\", \"bell pepper\", \"olive oil\", \"lemon juice\", \"salt\", \"black pepper\"],\n")
+                .append("  \"steps\": [\n")
+                .append("    \"Cook the quinoa according to package instructions and let it cool.\",\n")
+                .append("    \"Chop cucumber, cherry tomatoes, red onion, and bell pepper into bite-sized pieces.\",\n")
+                .append("    \"Combine cooked quinoa, chopped vegetables, and olives in a large bowl.\",\n")
+                .append("    \"Crumble feta cheese over the mixture.\",\n")
+                .append("    \"In a small bowl, whisk together olive oil, lemon juice, salt, and black pepper to make the dressing.\",\n")
+                .append("    \"Pour the dressing over the salad and toss to coat evenly.\",\n")
+                .append("    \"Serve immediately or refrigerate for up to 3 days.\"\n")
+                .append("  ],\n")
+                .append("  \"nutritionalValues\": {\n")
+                .append("    \"protein_percentage\": \"20%\",\n")
+                .append("    \"carbohydrates_percentage\": \"50%\",\n")
+                .append("    \"fat_percentage\": \"30%\",\n")
+                .append("    \"calories\": \"450\"\n")
                 .append("  }\n")
                 .append("}\n")
                 .append("Ensure the output is well-structured and valid JSON.");
