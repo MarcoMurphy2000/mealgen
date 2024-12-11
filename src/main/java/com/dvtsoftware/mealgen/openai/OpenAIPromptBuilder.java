@@ -12,7 +12,6 @@ public class OpenAIPromptBuilder {
         promptBuilder = new StringBuilder();
     }
 
-    // Give direction: Add culturally inclusive and safety-focused prompt introduction
     public OpenAIPromptBuilder startPrompt() {
         promptBuilder.append("Generate a random meal that is culturally inclusive and unbiased. ")
                 .append("The meal should reflect diverse cuisines from around the world and be adaptable to different dietary preferences.\n")
@@ -58,11 +57,9 @@ public class OpenAIPromptBuilder {
         String gender = mealRequestDomainObject.getGender();
         String mealCategory = String.valueOf(mealRequestDomainObject.getMealCategory());
 
-        // If no gender is provided, use the default average macronutrient breakdown
         if (gender == null || gender.isEmpty()) {
             handleDefaultMacros(mealCategory);
         } else {
-            // Handle gender-specific macronutrient breakdowns
             switch (gender.toLowerCase()) {
                 case "female":
                     handleFemaleMacros(mealCategory);
@@ -78,7 +75,6 @@ public class OpenAIPromptBuilder {
         return this;
     }
 
-    // Handle female-specific macronutrient breakdowns
     private void handleFemaleMacros(String mealCategory) {
         switch (mealCategory != null ? mealCategory : "") {
             case "WeightLoss":
@@ -96,7 +92,6 @@ public class OpenAIPromptBuilder {
         }
     }
 
-    // Handle male-specific macronutrient breakdowns
     private void handleMaleMacros(String mealCategory) {
         switch (mealCategory != null ? mealCategory : "") {
             case "WeightLoss":
@@ -114,7 +109,6 @@ public class OpenAIPromptBuilder {
         }
     }
 
-    // Handle default macronutrient breakdowns when no gender is specified
     private void handleDefaultMacros(String mealCategory) {
         switch (mealCategory != null ? mealCategory : "") {
             case "WeightLoss":
@@ -132,7 +126,6 @@ public class OpenAIPromptBuilder {
         }
     }
 
-    // Add instruction to format the output as JSON, including an example to guide the model
     public OpenAIPromptBuilder withJSONFormat() {
         promptBuilder.append("Format the output in the following JSON structure:\n")
                 .append("{\n")
