@@ -12,10 +12,9 @@ import com.dvtsoftware.mealgen.model.entity.MealEntity;
 import com.dvtsoftware.mealgen.openai.MealGenerationService;
 import com.dvtsoftware.mealgen.repository.MealRepository;
 import com.dvtsoftware.mealgen.service.interfaces.MealService;
+import io.awspring.cloud.sns.core.SnsTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.sns.SnsClient;
-import software.amazon.awssdk.services.sns.model.PublishRequest;
 
 @Service
 public class MealServiceImpl implements MealService {
@@ -25,17 +24,17 @@ public class MealServiceImpl implements MealService {
     private final MealRepository mealRepository;
     private final MealMapper mealMapper;
     private final MealGenerationService mealGenerationService;
-    private final SnsClient snsClient;
+    private final SnsTemplate snsTemplate;
 
     @Autowired
     public MealServiceImpl(MealRepository mealRepository,
                            MealMapper mealMapper,
                            MealGenerationService mealGenerationService,
-                           SnsClient snsClient) {
+                           SnsTemplate snsTemplate) {
         this.mealRepository = mealRepository;
         this.mealMapper = mealMapper;
         this.mealGenerationService = mealGenerationService;
-        this.snsClient = snsClient;
+        this.snsTemplate = snsTemplate;
     }
 
     @Override
@@ -85,15 +84,8 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public void sendMealNotification(MealDomainObject mealDomainObject) {
-        String topicArn = "arn:aws:sns:us-east-1:324037301453:MyTopic";
-        String message = "A new meal has been generated: " + mealDomainObject.getMealName();
-
-        PublishRequest request = PublishRequest.builder()
-                .topicArn(topicArn)
-                .message(message)
-                .build();
-
-        snsClient.publish(request);
+        String topicName = "MyTopic";
+        snsTemplate.sendNotification(topicName, mealDomainObject, "New Meal Created");
     }
 
     private void checkMealExists(final Long id) throws NoSuchElementException {

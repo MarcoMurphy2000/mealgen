@@ -1,5 +1,6 @@
 package com.dvtsoftware.mealgen.aws;
 
+import io.awspring.cloud.sns.core.SnsTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -8,6 +9,11 @@ import software.amazon.awssdk.services.sns.SnsClient;
 
 @Configuration
 public class SnsConfig {
+
+    @Bean
+    public SnsTemplate snsTemplate(SnsClient snsClient) {
+        return new SnsTemplate(snsClient);
+    }
 
     @Bean
     public SnsClient snsClient() {
