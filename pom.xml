@@ -28,6 +28,7 @@
         <spring-boot-starter-cache.version>3.2.5</spring-boot-starter-cache.version>
         <cache-api.version>1.1.1</cache-api.version>
         <ehcache.version>3.10.8</ehcache.version>
+        <karate-junit5.version>1.4.1</karate-junit5.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -41,13 +42,16 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <!-- AWS Dependencies -->
+
+        <!-- Karate Dependency -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-aws</artifactId>
-            <version>2.2.6.RELEASE</version>
+            <groupId>com.intuit.karate</groupId>
+            <artifactId>karate-junit5</artifactId>
+            <version>${karate-junit5.version}</version>
+            <scope>test</scope>
         </dependency>
 
+        <!-- AWS Dependencies -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>rds</artifactId>
@@ -72,6 +76,19 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>dynamodb</artifactId>
         </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sns</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>arns</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+
         <!-- Spring Boot Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -161,7 +178,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>3.3.4</version>
             <scope>compile</scope>
         </dependency>
 

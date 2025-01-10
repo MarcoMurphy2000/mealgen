@@ -25,7 +25,9 @@ public class MealServiceImpl implements MealService {
     private final MealGenerationService mealGenerationService;
 
     @Autowired
-    public MealServiceImpl(MealRepository mealRepository, MealMapper mealMapper, MealGenerationService mealGenerationService) {
+    public MealServiceImpl(MealRepository mealRepository,
+                           MealMapper mealMapper,
+                           MealGenerationService mealGenerationService) {
         this.mealRepository = mealRepository;
         this.mealMapper = mealMapper;
         this.mealGenerationService = mealGenerationService;
