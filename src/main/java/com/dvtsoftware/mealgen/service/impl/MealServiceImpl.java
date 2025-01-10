@@ -12,6 +12,7 @@ import com.dvtsoftware.mealgen.model.entity.MealEntity;
 import com.dvtsoftware.mealgen.openai.MealGenerationService;
 import com.dvtsoftware.mealgen.repository.MealRepository;
 import com.dvtsoftware.mealgen.service.interfaces.MealService;
+import io.awspring.cloud.sns.core.SnsTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,25 +24,32 @@ public class MealServiceImpl implements MealService {
     private final MealRepository mealRepository;
     private final MealMapper mealMapper;
     private final MealGenerationService mealGenerationService;
+    private final SnsTemplate snsTemplate;
 
     @Autowired
     public MealServiceImpl(MealRepository mealRepository,
                            MealMapper mealMapper,
-                           MealGenerationService mealGenerationService) {
+                           MealGenerationService mealGenerationService,
+                           SnsTemplate snsTemplate) {
         this.mealRepository = mealRepository;
         this.mealMapper = mealMapper;
         this.mealGenerationService = mealGenerationService;
+        this.snsTemplate = snsTemplate;
     }
 
+    @Override
     public MealDomainObject generateMeal(MealRequestDomainObject mealRequestDomainObject) throws IOException {
         MealDomainObject mealDomainObject = mealGenerationService.generateMeal(mealRequestDomainObject);
 
         MealEntity mealEntity = mealMapper.mapMealDOToMealEntity(mealDomainObject);
         mealRepository.save(mealEntity);
 
+        sendMealNotification(mealDomainObject);
+
         return mealDomainObject;
     }
 
+    @Override
     public List<MealDomainObject> getAllMeals() {
         List<MealEntity> mealEntities = mealRepository.findAll();
         return mealEntities.stream()
@@ -49,12 +57,14 @@ public class MealServiceImpl implements MealService {
                 .toList();
     }
 
+    @Override
     public MealDomainObject getMealById(final Long id) throws NoSuchElementException {
         Optional<MealEntity> mealEntity = mealRepository.findById(id);
         return mealEntity.map(mealMapper::mapMealEntityToMealDO)
                 .orElseThrow(() -> new NoSuchElementException(MEAL_NOT_FOUND));
     }
 
+    @Override
     public void updateMeal(Long id, MealDomainObject mealDomainObject) throws NoSuchElementException {
         checkMealExists(id);
         MealEntity updatedMealEntity = mealMapper.mapMealDOToMealEntity(mealDomainObject);
@@ -62,12 +72,20 @@ public class MealServiceImpl implements MealService {
         mealRepository.save(updatedMealEntity);
     }
 
+    @Override
     public void deleteMeal(Long id) {
         mealRepository.deleteById(id);
     }
 
+    @Override
     public void deleteAllMeals() {
         mealRepository.deleteAll();
+    }
+
+    @Override
+    public void sendMealNotification(MealDomainObject mealDomainObject) {
+        String topicName = "MyTopic";
+        snsTemplate.sendNotification(topicName, mealDomainObject, "New Meal Created");
     }
 
     private void checkMealExists(final Long id) throws NoSuchElementException {

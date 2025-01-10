@@ -26,6 +26,7 @@ public class RecipeServiceImpl implements RecipeService {
         this.recipeMapper = recipeMapper;
     }
 
+    @Override
     public List<RecipeDomainObject> getAllRecipes() {
         List<RecipeEntity> recipeEntities = recipeRepository.findAll();
         return recipeEntities.stream()
@@ -33,12 +34,14 @@ public class RecipeServiceImpl implements RecipeService {
                 .toList();
     }
 
+    @Override
     public RecipeDomainObject getRecipeById(Long id) throws NoSuchElementException {
         Optional<RecipeEntity> recipeEntity = recipeRepository.findById(id);
         return recipeEntity.map(recipeMapper::mapRecipeEntityToRecipeDO)
                 .orElseThrow(() -> new RuntimeException(RECIPE_NOT_FOUND));
     }
 
+    @Override
     public void updateRecipe(Long id, RecipeDomainObject recipeDomainObject) throws NoSuchElementException {
         checkRecipeExists(id);
         RecipeEntity recipeEntity = recipeMapper.mapRecipeDOToRecipeEntity(recipeDomainObject);
@@ -46,10 +49,12 @@ public class RecipeServiceImpl implements RecipeService {
         recipeRepository.save(recipeEntity);
     }
 
+    @Override
     public void deleteRecipe(Long id) {
         recipeRepository.deleteById(id);
     }
 
+    @Override
     public void checkRecipeExists(final Long id) throws NoSuchElementException {
         if (!recipeRepository.existsById(id)) {
             throw new NoSuchElementException(RECIPE_NOT_FOUND);

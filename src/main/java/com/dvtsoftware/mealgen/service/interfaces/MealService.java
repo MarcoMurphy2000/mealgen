@@ -20,5 +20,7 @@ public interface MealService {
     void deleteMeal(Long id);
 
     void deleteAllMeals();
+
+    void sendMealNotification(MealDomainObject mealDomainObject);
 }
 
