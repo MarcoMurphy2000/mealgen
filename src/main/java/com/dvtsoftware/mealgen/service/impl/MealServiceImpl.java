@@ -84,7 +84,7 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public void sendMealNotification(MealDomainObject mealDomainObject) {
-        String topicName = "MyTopic";
+        String topicName = "MealTopic";
         snsTemplate.sendNotification(topicName, mealDomainObject, "New Meal Created");
     }
 
