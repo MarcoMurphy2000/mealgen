@@ -2,7 +2,6 @@ package com.dvtsoftware.mealgen.service.impl;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import com.dvtsoftware.mealgen.mapper.RecipeMapper;
 import com.dvtsoftware.mealgen.model.domain.RecipeDomainObject;
@@ -36,9 +35,9 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public RecipeDomainObject getRecipeById(Long id) throws NoSuchElementException {
-        Optional<RecipeEntity> recipeEntity = recipeRepository.findById(id);
-        return recipeEntity.map(recipeMapper::mapRecipeEntityToRecipeDO)
-                .orElseThrow(() -> new RuntimeException(RECIPE_NOT_FOUND));
+        return recipeRepository.findById(id)
+                .map(recipeMapper::mapRecipeEntityToRecipeDO)
+                .orElseThrow(() -> new NoSuchElementException(RECIPE_NOT_FOUND));
     }
 
     @Override
