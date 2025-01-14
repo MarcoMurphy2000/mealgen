@@ -22,7 +22,6 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -68,9 +67,9 @@ class MealServiceImplTest {
 
         MealDomainObject result = mealServiceImpl.generateMeal(mealRequest);
 
-        verify(mealRepository).save(mealEntity); // Verify meal is saved
-        verify(snsTemplate).sendNotification(eq("MyTopic"), eq(generatedMeal), eq("New Meal Created")); // Verify notification
-        assertEquals("Test Meal", result.getMealName()); // Verify returned meal
+        verify(mealRepository).save(mealEntity);
+        verify(snsTemplate).sendNotification("MealTopic", generatedMeal, "New Meal Created");
+        assertEquals("Test Meal", result.getMealName());
     }
 
     @Test
@@ -151,6 +150,6 @@ class MealServiceImplTest {
 
         mealServiceImpl.sendMealNotification(mealDomainObject);
 
-        verify(snsTemplate).sendNotification(eq("MyTopic"), eq(mealDomainObject), eq("New Meal Created"));
+        verify(snsTemplate).sendNotification("MealTopic", mealDomainObject, "New Meal Created");
     }
 }
