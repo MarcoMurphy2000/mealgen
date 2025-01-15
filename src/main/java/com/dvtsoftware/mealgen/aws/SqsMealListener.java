@@ -24,7 +24,7 @@ public class SqsMealListener {
         this.mealServiceImpl = mealServiceImpl;
     }
 
-    @SqsListener("MyQueue")
+    @SqsListener("NewQueue")
     public void processMealRequest(@Payload String message) {
         try {
             log.info("Received message from SQS: {}", message);

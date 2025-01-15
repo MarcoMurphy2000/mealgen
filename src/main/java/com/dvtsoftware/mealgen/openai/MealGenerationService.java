@@ -31,15 +31,8 @@ public class MealGenerationService {
         // Call OpenAI API to generate a response
         String openAIResponse = openAIService.generateResponse(prompt);
 
-        // Parse the OpenAI response into a MealDomainObject
-        MealDomainObject mealDomainObject = new OpenAIResponseParser().parse(openAIResponse);
-
-        // Map MealDomainObject to MealEntity and save to the database
-        MealEntity mealEntity = mealMapper.mapMealDOToMealEntity(mealDomainObject);
-        mealRepository.save(mealEntity);
-
         // Return the MealDomainObject
-        return mealDomainObject;
+        return new OpenAIResponseParser().parse(openAIResponse);
     }
 
     private String constructOpenAIPrompt(MealRequestDomainObject mealRequestDomainObject) {
