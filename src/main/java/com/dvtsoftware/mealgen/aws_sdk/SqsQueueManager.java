@@ -1,6 +1,9 @@
-package com.dvtsoftware.mealgen.assessment2;
+package com.dvtsoftware.mealgen.aws_sdk;
+
+import java.util.Map;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsClient;
@@ -8,6 +11,7 @@ import software.amazon.awssdk.services.sqs.model.CreateQueueRequest;
 import software.amazon.awssdk.services.sqs.model.DeleteQueueRequest;
 import software.amazon.awssdk.services.sqs.model.GetQueueAttributesRequest;
 import software.amazon.awssdk.services.sqs.model.QueueAttributeName;
+import software.amazon.awssdk.services.sqs.model.SetQueueAttributesRequest;
 
 @Component
 @Slf4j
@@ -15,6 +19,7 @@ public class SqsQueueManager {
 
     private static final String QUEUE_NAME = "NewQueue";
     @Getter
+    @Setter
     private String queueUrl;
     private final SqsClient sqsClient;
 
@@ -24,13 +29,10 @@ public class SqsQueueManager {
 
     public void createQueue() {
         try {
-            CreateQueueRequest createQueueRequest = CreateQueueRequest.builder()
+            CreateQueueRequest request = CreateQueueRequest.builder()
                     .queueName(QUEUE_NAME)
                     .build();
-
-            sqsClient.createQueue(createQueueRequest);
-
-            queueUrl = sqsClient.getQueueUrl(r -> r.queueName(QUEUE_NAME)).queueUrl();
+            queueUrl = sqsClient.createQueue(request).queueUrl();
             log.info("Created SQS Queue with URL: {}", queueUrl);
         } catch (Exception e) {
             log.error("Error creating SQS Queue: {}", e.getMessage(), e);
@@ -53,6 +55,21 @@ public class SqsQueueManager {
         }
     }
 
+    public void setQueuePolicy(String queueArn, String topicArn) {
+        String policy = generateQueuePolicy(queueArn, topicArn);
+        try {
+            SetQueueAttributesRequest request = SetQueueAttributesRequest.builder()
+                    .queueUrl(queueUrl)
+                    .attributes(Map.of(QueueAttributeName.POLICY, policy))
+                    .build();
+
+            sqsClient.setQueueAttributes(request);
+            log.info("Set policy for SQS queue [{}] to allow messages from SNS topic [{}].", queueArn, topicArn);
+        } catch (Exception e) {
+            log.error("Error setting policy for SQS queue: {}", e.getMessage(), e);
+        }
+    }
+
     public void deleteQueue() {
         try {
             if (queueUrl != null) {
@@ -66,5 +83,28 @@ public class SqsQueueManager {
         } catch (Exception e) {
             log.error("Error deleting SQS Queue: {}", e.getMessage(), e);
         }
+    }
+
+    private String generateQueuePolicy(String queueArn, String topicArn) {
+        return String.format(
+                "{" +
+                        "  \"Version\": \"2012-10-17\"," +
+                        "  \"Statement\": [" +
+                        "    {" +
+                        "      \"Effect\": \"Allow\"," +
+                        "      \"Principal\": \"*\"," +
+                        "      \"Action\": \"sqs:SendMessage\"," +
+                        "      \"Resource\": \"%s\"," +
+                        "      \"Condition\": {" +
+                        "        \"ArnEquals\": {" +
+                        "          \"aws:SourceArn\": \"%s\"" +
+                        "        }" +
+                        "      }" +
+                        "    }" +
+                        "  ]" +
+                        "}",
+                queueArn,
+                topicArn
+        );
     }
 }

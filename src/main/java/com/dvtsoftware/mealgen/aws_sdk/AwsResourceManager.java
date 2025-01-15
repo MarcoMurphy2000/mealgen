@@ -1,4 +1,4 @@
-package com.dvtsoftware.mealgen.assessment2;
+package com.dvtsoftware.mealgen.aws_sdk;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -22,11 +22,12 @@ public class AwsResourceManager {
         log.info("Initializing AWS resources...");
 
         snsTopicManager.createSnsTopic();
-
         sqsQueueManager.createQueue();
 
         String queueArn = sqsQueueManager.getQueueArn();
+
         snsTopicManager.subscribeQueue(queueArn);
+        sqsQueueManager.setQueuePolicy(queueArn, snsTopicManager.getTopicArn());
 
         log.info("AWS resources initialized.");
     }
@@ -36,7 +37,6 @@ public class AwsResourceManager {
         log.info("Cleaning up AWS resources...");
 
         sqsQueueManager.deleteQueue();
-
         snsTopicManager.deleteSnsTopic();
 
         log.info("AWS resources cleaned up.");

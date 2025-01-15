@@ -1,6 +1,7 @@
-package com.dvtsoftware.mealgen.assessment2;
+package com.dvtsoftware.mealgen.aws_sdk;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sns.SnsClient;
@@ -15,6 +16,7 @@ public class SnsTopicManager {
 
     private static final String TOPIC_NAME = "NewTopic";
     @Getter
+    @Setter
     private String topicArn;
     private final SnsClient snsClient;
 
