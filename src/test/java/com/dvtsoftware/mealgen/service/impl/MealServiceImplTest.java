@@ -9,7 +9,7 @@ import com.dvtsoftware.mealgen.mapper.MealMapper;
 import com.dvtsoftware.mealgen.model.domain.MealDomainObject;
 import com.dvtsoftware.mealgen.model.domain.MealRequestDomainObject;
 import com.dvtsoftware.mealgen.model.entity.MealEntity;
-import com.dvtsoftware.mealgen.openai.MealGenerationService;
+import com.dvtsoftware.mealgen.openai.MealGenerator;
 import com.dvtsoftware.mealgen.repository.MealRepository;
 import io.awspring.cloud.sns.core.SnsTemplate;
 import org.junit.jupiter.api.AfterEach;
@@ -34,7 +34,7 @@ class MealServiceImplTest {
     private MealMapper mealMapper;
 
     @Mock
-    private MealGenerationService mealGenerationService;
+    private MealGenerator mealGenerator;
 
     @Mock
     private SnsTemplate snsTemplate;
@@ -62,7 +62,7 @@ class MealServiceImplTest {
 
         MealEntity mealEntity = new MealEntity();
 
-        when(mealGenerationService.generateMeal(mealRequest)).thenReturn(generatedMeal);
+        when(mealGenerator.generateMeal(mealRequest)).thenReturn(generatedMeal);
         when(mealMapper.mapMealDOToMealEntity(generatedMeal)).thenReturn(mealEntity);
 
         MealDomainObject result = mealServiceImpl.generateMeal(mealRequest);

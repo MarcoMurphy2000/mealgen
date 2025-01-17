@@ -2,36 +2,26 @@ package com.dvtsoftware.mealgen.openai;
 
 import java.io.IOException;
 
-import com.dvtsoftware.mealgen.mapper.MealMapper;
 import com.dvtsoftware.mealgen.model.domain.MealDomainObject;
 import com.dvtsoftware.mealgen.model.domain.MealRequestDomainObject;
-import com.dvtsoftware.mealgen.model.entity.MealEntity;
-import com.dvtsoftware.mealgen.repository.MealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MealGenerationService {
+public class MealGenerator {
 
-    private final MealRepository mealRepository;
-    private final MealMapper mealMapper;
-    private final OpenAIService openAIService;
+    private final OpenAIClient openAIClient;
 
     @Autowired
-    public MealGenerationService(MealRepository mealRepository, MealMapper mealMapper, OpenAIService openAIService) {
-        this.mealRepository = mealRepository;
-        this.mealMapper = mealMapper;
-        this.openAIService = openAIService;
+    public MealGenerator(OpenAIClient openAIClient) {
+        this.openAIClient = openAIClient;
     }
 
     public MealDomainObject generateMeal(MealRequestDomainObject mealRequestDomainObject) throws IOException {
-        // Construct the OpenAI prompt with all necessary details and JSON output format
         String prompt = constructOpenAIPrompt(mealRequestDomainObject);
 
-        // Call OpenAI API to generate a response
-        String openAIResponse = openAIService.generateResponse(prompt);
+        String openAIResponse = openAIClient.generateResponse(prompt);
 
-        // Return the MealDomainObject
         return new OpenAIResponseParser().parse(openAIResponse);
     }
 
