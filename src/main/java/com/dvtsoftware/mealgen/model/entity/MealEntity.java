@@ -11,16 +11,42 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedEntityGraphs;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Table(name = "meals",
-        uniqueConstraints = {@UniqueConstraint(name = "uk_recipe_name", columnNames = "recipeName")},
-        indexes = {@Index(name = "idx_category", columnList = "category")})
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_recipe_name", columnNames = {"recipe_name"})
+        },
+        indexes = {
+                @Index(name = "idx_category", columnList = "category")
+        })
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "MealDefault",
+                attributeNodes = {
+                        @NamedAttributeNode("calories"),
+                        @NamedAttributeNode("category")
+                }),
+        @NamedEntityGraph(name = "MealWithAllDetails",
+                attributeNodes = {
+                        @NamedAttributeNode("calories"),
+                        @NamedAttributeNode("category"),
+                        @NamedAttributeNode("protein"),
+                        @NamedAttributeNode("carbohydrates"),
+                        @NamedAttributeNode("fat")
+                })
+})
+@NoArgsConstructor
+@AllArgsConstructor
 public class MealEntity {
 
     @Id
@@ -31,7 +57,6 @@ public class MealEntity {
     @Column(name = "recipe_name", nullable = false)
     private String recipeName;
 
-    @Column(name = "ingredients", nullable = false)
     @ElementCollection
     private List<String> ingredients;
 
