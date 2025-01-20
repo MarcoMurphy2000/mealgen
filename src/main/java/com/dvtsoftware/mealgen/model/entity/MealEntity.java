@@ -54,8 +54,8 @@ public class MealEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "recipe_name", nullable = false)
-    private String recipeName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @ElementCollection
     private List<String> ingredients;
