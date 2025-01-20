@@ -12,7 +12,7 @@ public class RecipeValidator implements ModelValidator<RecipeEntity> {
     @Override
     public void validate(final RecipeEntity recipeEntity) {
         try {
-            verifyRecipeName(recipeEntity.getRecipeName());
+            verifyRecipeName(recipeEntity.getName());
             verifySteps(recipeEntity.getSteps());
         } catch (Exception e) {
             throw new ValidationException(e.getMessage());

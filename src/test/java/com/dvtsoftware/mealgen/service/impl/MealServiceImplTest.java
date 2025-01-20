@@ -9,7 +9,7 @@ import com.dvtsoftware.mealgen.mapper.MealMapper;
 import com.dvtsoftware.mealgen.model.domain.MealDomainObject;
 import com.dvtsoftware.mealgen.model.domain.MealRequestDomainObject;
 import com.dvtsoftware.mealgen.model.entity.MealEntity;
-import com.dvtsoftware.mealgen.openai.MealGenerationService;
+import com.dvtsoftware.mealgen.openai.MealGenerator;
 import com.dvtsoftware.mealgen.repository.MealRepository;
 import io.awspring.cloud.sns.core.SnsTemplate;
 import org.junit.jupiter.api.AfterEach;
@@ -22,7 +22,6 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +34,7 @@ class MealServiceImplTest {
     private MealMapper mealMapper;
 
     @Mock
-    private MealGenerationService mealGenerationService;
+    private MealGenerator mealGenerator;
 
     @Mock
     private SnsTemplate snsTemplate;
@@ -63,14 +62,14 @@ class MealServiceImplTest {
 
         MealEntity mealEntity = new MealEntity();
 
-        when(mealGenerationService.generateMeal(mealRequest)).thenReturn(generatedMeal);
+        when(mealGenerator.generateMeal(mealRequest)).thenReturn(generatedMeal);
         when(mealMapper.mapMealDOToMealEntity(generatedMeal)).thenReturn(mealEntity);
 
         MealDomainObject result = mealServiceImpl.generateMeal(mealRequest);
 
-        verify(mealRepository).save(mealEntity); // Verify meal is saved
-        verify(snsTemplate).sendNotification(eq("MyTopic"), eq(generatedMeal), eq("New Meal Created")); // Verify notification
-        assertEquals("Test Meal", result.getMealName()); // Verify returned meal
+        verify(mealRepository).save(mealEntity);
+        verify(snsTemplate).sendNotification("MealTopic", generatedMeal, "New Meal Created");
+        assertEquals("Test Meal", result.getMealName());
     }
 
     @Test
@@ -151,6 +150,6 @@ class MealServiceImplTest {
 
         mealServiceImpl.sendMealNotification(mealDomainObject);
 
-        verify(snsTemplate).sendNotification(eq("MyTopic"), eq(mealDomainObject), eq("New Meal Created"));
+        verify(snsTemplate).sendNotification("MealTopic", mealDomainObject, "New Meal Created");
     }
 }

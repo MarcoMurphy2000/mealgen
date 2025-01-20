@@ -11,13 +11,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OpenAIService {
+@Slf4j
+public class OpenAIClient {
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_KEY = "sk-proj-3x7AejrN0UuYsvP7XoWpT3BlbkFJ7DrGoQdrCDnQ9N6sjiLR";  // Ensure you replace with your correct API key
+    private static final String API_KEY = "sk-proj-3x7AejrN0UuYsvP7XoWpT3BlbkFJ7DrGoQdrCDnQ9N6sjiLR";
     private static final String MODEL = "gpt-3.5-turbo";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -59,7 +61,7 @@ public class OpenAIService {
                 }
             } else {
                 // Log error details for debugging
-                System.err.println("HTTP request failed with response code " + responseCode);
+                log.error("HTTP request failed with response code {}", responseCode);
 
                 // Capture and log the error message from OpenAI
                 try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(con.getErrorStream()))) {
@@ -68,7 +70,7 @@ public class OpenAIService {
                     while ((errorLine = errorReader.readLine()) != null) {
                         errorResponse.append(errorLine);
                     }
-                    System.err.println("Error response from OpenAI: " + errorResponse.toString());
+                    log.error("Error response from OpenAI: {}", errorResponse.toString());
                 }
 
                 throw new IOException("HTTP request failed with response code " + responseCode);

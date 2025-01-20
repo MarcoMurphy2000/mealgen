@@ -9,7 +9,7 @@ import com.dvtsoftware.mealgen.mapper.MealMapper;
 import com.dvtsoftware.mealgen.model.domain.MealDomainObject;
 import com.dvtsoftware.mealgen.model.domain.MealRequestDomainObject;
 import com.dvtsoftware.mealgen.model.entity.MealEntity;
-import com.dvtsoftware.mealgen.openai.MealGenerationService;
+import com.dvtsoftware.mealgen.openai.MealGenerator;
 import com.dvtsoftware.mealgen.repository.MealRepository;
 import com.dvtsoftware.mealgen.service.interfaces.MealService;
 import io.awspring.cloud.sns.core.SnsTemplate;
@@ -23,23 +23,23 @@ public class MealServiceImpl implements MealService {
 
     private final MealRepository mealRepository;
     private final MealMapper mealMapper;
-    private final MealGenerationService mealGenerationService;
+    private final MealGenerator mealGenerator;
     private final SnsTemplate snsTemplate;
 
     @Autowired
     public MealServiceImpl(MealRepository mealRepository,
                            MealMapper mealMapper,
-                           MealGenerationService mealGenerationService,
+                           MealGenerator mealGenerator,
                            SnsTemplate snsTemplate) {
         this.mealRepository = mealRepository;
         this.mealMapper = mealMapper;
-        this.mealGenerationService = mealGenerationService;
+        this.mealGenerator = mealGenerator;
         this.snsTemplate = snsTemplate;
     }
 
     @Override
     public MealDomainObject generateMeal(MealRequestDomainObject mealRequestDomainObject) throws IOException {
-        MealDomainObject mealDomainObject = mealGenerationService.generateMeal(mealRequestDomainObject);
+        MealDomainObject mealDomainObject = mealGenerator.generateMeal(mealRequestDomainObject);
 
         MealEntity mealEntity = mealMapper.mapMealDOToMealEntity(mealDomainObject);
         mealRepository.save(mealEntity);

@@ -19,7 +19,7 @@ public class RecipeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String recipeName;
+    private String name;
 
     @ElementCollection
     private List<String> steps;
