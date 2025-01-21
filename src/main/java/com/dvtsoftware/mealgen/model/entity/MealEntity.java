@@ -24,9 +24,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @Table(name = "meals",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uk_recipe_name", columnNames = {"recipe_name"})
-        },
+//        uniqueConstraints = {
+//                @UniqueConstraint(name = "uk_recipe_name", columnNames = {"recipe_name"})
+//        },
         indexes = {
                 @Index(name = "idx_category", columnList = "category")
         })
@@ -54,7 +54,7 @@ public class MealEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
     @ElementCollection
