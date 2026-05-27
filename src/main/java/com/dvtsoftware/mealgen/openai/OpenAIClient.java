@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,8 +20,12 @@ import org.springframework.stereotype.Service;
 public class OpenAIClient {
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_KEY = "sk-proj-3x7AejrN0UuYsvP7XoWpT3BlbkFJ7DrGoQdrCDnQ9N6sjiLR";
-    private static final String MODEL = "gpt-3.5-turbo";
+
+    @Value("${openai.api.key}")
+    private String apiKey;
+
+    @Value("${openai.model:gpt-3.5-turbo}")
+    private String model;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -30,13 +35,13 @@ public class OpenAIClient {
             URL url = new URL(API_URL);
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
-            con.setRequestProperty("Authorization", "Bearer " + API_KEY);
+            con.setRequestProperty("Authorization", "Bearer " + apiKey);
             con.setRequestProperty("Content-Type", "application/json");
             con.setDoOutput(true);
 
             // Build the request payload as a Map
             Map<String, Object> payload = new HashMap<>();
-            payload.put("model", MODEL);
+            payload.put("model", model);
             payload.put("messages", List.of(Map.of("role", "user", "content", prompt)));
 
             // Serialize the payload to JSON

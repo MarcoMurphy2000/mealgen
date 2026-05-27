@@ -8,13 +8,17 @@ import com.dvtsoftware.mealgen.model.domain.RecipeDomainObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OpenAIResponseParser {
+
+    private static final Logger log = LoggerFactory.getLogger(OpenAIResponseParser.class);
 
     public MealDomainObject parse(String response) {
         try {
             // Log the raw response for debugging purposes
-            System.out.println("Raw JSON response from OpenAI: " + response);
+            log.debug("Raw JSON response from OpenAI: {}", response);
 
             // Parse the response as a JSON object
             JSONObject jsonResponse = new JSONObject(response);
@@ -66,8 +70,8 @@ public class OpenAIResponseParser {
 
         } catch (JSONException e) {
             // Log the error with the response
-            System.err.println("Error parsing OpenAI response: " + e.getMessage());
-            System.err.println("Raw response: " + response);
+            log.error("Error parsing OpenAI response: {}", e.getMessage());
+            log.debug("Raw response: {}", response);
             throw new RuntimeException("Error parsing OpenAI response", e);
         }
     }
